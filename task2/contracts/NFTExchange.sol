@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "hardhat/console.sol";
 
 // ReentrancyGuard 防合约调用重入攻击
 contract NFTExchange is ReentrancyGuard {
@@ -27,10 +28,15 @@ contract NFTExchange is ReentrancyGuard {
         require(nft.getApproved(tokenId) == address(this) || nft.isApprovedForAll(msg.sender, address(this)), "Not approved");
 
         orders[nftAddress][tokenId] = Order(msg.sender, price);
+        console.log("list owner address", orders[nftAddress][tokenId].owner);
+        console.log("order price", orders[nftAddress][tokenId].price);
+
         emit Listed(nftAddress, tokenId, price);
     }
     // 卖家撤单NFT revoke
     function revoke(address nftAddress, uint256 tokenId) external {
+        console.log("revoke owner address", orders[nftAddress][tokenId].owner);
+        console.log("msg sender", msg.sender);
         require(orders[nftAddress][tokenId].owner == msg.sender, "Not the owner");
 
         delete orders[nftAddress][tokenId];
