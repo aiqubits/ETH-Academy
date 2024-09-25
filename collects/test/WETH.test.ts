@@ -17,7 +17,6 @@ describe("WETH", function () {
 
     // Deploy the WETH contract
     weth = await WETH.deploy();
-    // await weth.deployed();
   });
 
   describe("Deployment", function () {

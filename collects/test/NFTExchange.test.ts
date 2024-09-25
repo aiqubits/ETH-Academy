@@ -2,12 +2,6 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { NFTExchange, MERC721 } from "../typechain-types";
 
-// import { Contract } from "ethers";
-
-// let nft: Contract;
-// let nftExchange: Contract;
-
-
 describe("NFTExchange", function () {
   let nftExchange: NFTExchange;
   let nft: MERC721;
