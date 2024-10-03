@@ -17,6 +17,9 @@ contract Ballot {
     }
 
     address public chairperson;
+    uint public startTime; // 投票开始时间
+    uint public endTime;   // 投票结束时间
+
     // 声明状态变量，为每个可能的地址存储一个Voter结构
     mapping(address => Voter) public voters;
 
@@ -24,9 +27,14 @@ contract Ballot {
     Proposal[] public proposals;
     
     /// 为`proposalNames` 中的每个提案创建一个Proposal结构，并将其添加到`proposals`数组中
-    constructor(bytes32[] memory proposalNames) {
+    constructor(bytes32[] memory proposalNames, uint _startTime, uint _endTime) {
+        require(_startTime < _endTime, "Start time must be before end time");
+
         chairperson = msg.sender;
         voters[chairperson].weight = 1;
+
+        startTime = _startTime;
+        endTime = _endTime;
 
         for (uint i = 0; i < proposalNames.length; i++) {
             proposals.push(Proposal({name: proposalNames[i], voteCount: 0}));
@@ -65,6 +73,8 @@ contract Ballot {
     }
 
     function vote(uint proposal) external {
+        require(block.timestamp >= startTime && block.timestamp <= endTime, "Voting is not within the allowed time frame");
+
         Voter storage sender = voters[msg.sender];
         require(sender.weight != 0, "You have no rtght to vote");    
         require(!sender.voted, "You already voted.");
